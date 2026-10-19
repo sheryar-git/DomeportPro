@@ -29,7 +29,11 @@ Item {
     property var domeportModel
     property var appWindow
 
-    Component.onCompleted: Controller.initialize()
+    // initialize() ends with Score.play(). In the web build score starts its
+    // audio engine one event-loop turn later, and play() before that, with no
+    // main window, is a qFatal ("Cannot playback without an audio engine set
+    // up"). So wait one turn.
+    Component.onCompleted: Qt.callLater(Controller.initialize)
 
     // ---- Route model changes to the controller ----
     Connections {
